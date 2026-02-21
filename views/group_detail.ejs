@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Group Detail</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <script>
+    async function refreshChat(groupId) {
+      try {
+        const res = await fetch('/groups/' + groupId + '/refresh');
+        if (!res.ok) return;
+        const data = await res.json();
+        const container = document.getElementById('message-list');
+        container.innerHTML = '';
+        data.messages.forEach(function(m) {
+          const div = document.createElement('div');
+          div.className = 'mb-2';
+          let html = '<strong>' + m.sender + '</strong> ' +
+                     '<small>' + new Date(m.createdAt).toLocaleString() + '</small><br>';
+          if (m.text) html += m.text + '<br>';
+          if (m.imagePath) html += '<img src="' + m.imagePath + '" style="max-width:200px;"><br>';
+          div.innerHTML = html;
+          container.appendChild(div);
+        });
+      } catch (err) {
+        console.error(err);
+      }
+    }
+  </script>
+</head>
+<body class="container mt-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h2>Group: <%= group.title %></h2>
+    <div>
+      <span class="me-2">Hello, <%= currentUser.nickname %></span>
+      <a class="btn btn-sm btn-outline-danger" href="/logout">Logout</a>
+    </div>
+  </div>
+  <p><%= group.description %></p>
+
+  <div class="mb-3">
+    <strong>Joined users:</strong>
+    <ul>
+      <% members.forEach(function(m) { %>
+        <li><%= m.nickname %> (<%= m.loginId %>)</li>
+      <% }) %>
+    </ul>
+  </div>
+
+  <div class="mb-3">
+    <h4>Messages</h4>
+    <div id="message-list" style="border:1px solid #ccc; padding:10px; max-height:400px; overflow-y:auto;">
+      <% if (messages.length === 0) { %>
+        <p>No messages yet.</p>
+      <% } %>
+      <% messages.forEach(function(msg) { %>
+        <div class="mb-2">
+          <strong><%= msg.sender.nickname || msg.sender.loginId %></strong>
+          <small><%= msg.createdAt.toLocaleString() %></small><br>
+          <% if (msg.text) { %>
+            <%= msg.text %><br>
+          <% } %>
+          <% if (msg.imagePath) { %>
+            <img src="<%= msg.imagePath %>" style="max-width:200px;"><br>
+          <% } %>
+        </div>
+      <% }) %>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <h4>Send message</h4>
+    <% if (error) { %>
+      <div class="alert alert-danger"><%= error %></div>
+    <% } %>
+    <form method="post" enctype="multipart/form-data" action="/groups/<%= group._id %>/message">
+      <div class="mb-3">
+        <label class="form-label">Text</label>
+        <textarea class="form-control" name="text" rows="2"></textarea>
+      </div>
+      <div class="mb-3">
+        <label class="form-label">Image</label>
+        <input class="form-control" type="file" name="image" />
+      </div>
+      <button class="btn btn-success" type="submit">Send chat</button>
+    </form>
+  </div>
+
+  <button class="btn btn-info" onclick="refreshChat('<%= group._id %>')">Refresh chat</button>
+  <a class="btn btn-warning" href="/groups/<%= group._id %>/leave">Leave group</a>
+  <a class="btn btn-secondary" href="/dashboard">Back</a>
+  <footer class="bg-light text-center py-3 mt-5" style="border-top: 1px solid #dee2e6;">
+  <p class="mb-0 small text-muted">&copy; 2026 EIE3117 23079398d Yuen Pak Hei</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body class="container mt-4">
+  <div class="d-flex justify-content-between mb-3">
+    <h2>Dashboard</h2>
+    <div>
+      <span class="me-2">Hello, <%= currentUser.nickname %></span>
+      <a class="btn btn-sm btn-outline-danger" href="/logout">Logout</a>
+    </div>
+  </div>
+
+  <h4>Your joined groups</h4>
+  <ul>
+    <% if (myGroups.length === 0) { %>
+      <li>You have not joined any groups yet.</li>
+    <% } %>
+    <% myGroups.forEach(function(g) { %>
+      <li><a href="/groups/<%= g._id %>"><%= g.title %></a></li>
+    <% }) %>
+  </ul>
+
+  <a class="btn btn-secondary" href="/groups">All groups</a>
+  <a class="btn btn-secondary" href="/groups/mine">My groups</a>
+  <a class="btn btn-primary" href="/groups/create">Create group</a>
+  <footer class="bg-light text-center py-3 mt-5" style="border-top: 1px solid #dee2e6;">
+  <p class="mb-0 small text-muted">&copy; 2026 EIE3117 23079398d Yuen Pak Hei</p>
+  </footer>
+</body>
+</html>

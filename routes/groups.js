@@ -1,4 +1,3 @@
-// routes/groups.js
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -10,7 +9,6 @@ const User = require('../models/User');
 
 const router = express.Router();
 
-// Multer for message image uploads
 const msgStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     const dir = path.join(__dirname, '..', 'uploads', 'messages');
@@ -24,7 +22,6 @@ const msgStorage = multer.diskStorage({
 });
 const uploadMsg = multer({ storage: msgStorage });
 
-// Dashboard: list joined groups
 router.get('/dashboard', ensureAuth, async (req, res) => {
   const userId = req.session.user.id;
   const myGroups = await Group.find({ members: userId }).sort({ createdAt: -1 });
@@ -44,7 +41,6 @@ router.get('/groups/mine', ensureAuth, async (req, res) => {
   res.render('mygroups', { groups });
 });
 
-// Create group
 router.get('/groups/create', ensureAuth, (req, res) => {
   res.render('group_create', { error: null });
 });
@@ -70,7 +66,6 @@ router.post('/groups/create', ensureAuth, async (req, res) => {
   }
 });
 
-// Join group
 router.get('/groups/:id/join', ensureAuth, async (req, res) => {
   const groupId = req.params.id;
   const userId = req.session.user.id;
@@ -84,7 +79,6 @@ router.get('/groups/:id/join', ensureAuth, async (req, res) => {
   res.redirect(`/groups/${groupId}`);
 });
 
-// Leave group
 router.get('/groups/:id/leave', ensureAuth, async (req, res) => {
   const groupId = req.params.id;
   const userId = req.session.user.id;
@@ -96,7 +90,6 @@ router.get('/groups/:id/leave', ensureAuth, async (req, res) => {
   res.redirect('/dashboard');
 });
 
-// Group detail (view and send messages)
 router.get('/groups/:id', ensureAuth, async (req, res) => {
   const groupId = req.params.id;
   const userId = req.session.user.id;
@@ -156,7 +149,6 @@ router.post('/groups/:id/message', ensureAuth, uploadMsg.single('image'), async 
   res.redirect(`/groups/${groupId}`);
 });
 
-// Manual refresh: return JSON list of messages
 router.get('/groups/:id/refresh', ensureAuth, async (req, res) => {
   const groupId = req.params.id;
   const userId = req.session.user.id;

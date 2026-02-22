@@ -1,4 +1,3 @@
-// public/js/main.js
 async function refreshChat(groupId) {
   try {
     const res = await fetch(`/groups/${groupId}/refresh`);

@@ -1,4 +1,3 @@
-// routes/auth.js
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -7,7 +6,6 @@ const User = require('../models/User');
 
 const router = express.Router();
 
-// Multer for profile image uploads
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const dir = path.join(__dirname, '..', 'uploads', 'profiles');
@@ -21,12 +19,10 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-// GET register
 router.get('/register', (req, res) => {
   res.render('register', { error: null });
 });
 
-// POST register
 router.post('/register', upload.single('profileImage'), async (req, res) => {
   try {
     const { loginId, nickname, email, password, passwordConfirm } = req.body;
@@ -60,12 +56,10 @@ router.post('/register', upload.single('profileImage'), async (req, res) => {
   }
 });
 
-// GET login
 router.get('/login', (req, res) => {
   res.render('login', { error: null });
 });
 
-// POST login (with remember-me checkbox)
 router.post('/login', async (req, res) => {
   try {
     const { loginId, password, rememberMe } = req.body;
@@ -79,20 +73,17 @@ router.post('/login', async (req, res) => {
       return res.render('login', { error: 'Invalid login id or password' });
     }
 
-    // store minimal user data in session
     req.session.user = {
       id: user._id.toString(),
       loginId: user.loginId,
       nickname: user.nickname,
     };
 
-    // remember-me: set cookie with long expiry if checked, else session cookie
     if (rememberMe) {
-      // 14 days in ms
       const twoWeeks = 14 * 24 * 60 * 60 * 1000;
       req.session.cookie.maxAge = twoWeeks;
     } else {
-      req.session.cookie.expires = false; // cookie removed when browser closes
+      req.session.cookie.expires = false; 
     }
 
     res.redirect('/dashboard');
@@ -102,7 +93,6 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// GET logout (destroy session and clear cookie)
 router.get('/logout', (req, res) => {
   req.session.destroy(() => {
     res.clearCookie('connect.sid');

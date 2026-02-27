@@ -28,13 +28,11 @@ router.get('/dashboard', ensureAuth, async (req, res) => {
   res.render('dashboard', { myGroups });
 });
 
-// List all groups
 router.get('/groups', ensureAuth, async (req, res) => {
   const groups = await Group.find().sort({ createdAt: -1 });
   res.render('groups', { groups });
 });
 
-// List my groups
 router.get('/groups/mine', ensureAuth, async (req, res) => {
   const userId = req.session.user.id;
   const groups = await Group.find({ members: userId }).sort({ createdAt: -1 });

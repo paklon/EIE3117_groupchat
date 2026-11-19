@@ -45,4 +45,9 @@ node server.js
 - Create, join, and leave chat groups  
 - Send text and image messages, manual “refresh chat”  
 - MongoDB Atlas integration  
-- Footer: `© 2026 EIE3117 23079398d Yuen Pak Hei`
+- Footer: `© 2026 EIE3117 Yuen Pak Hei`
+
+---
+
+### 👤 Author
+* Yuen Pak Hei — BSc in Information Security, The Hong Kong Polytechnic University 
